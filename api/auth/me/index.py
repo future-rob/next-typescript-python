@@ -23,7 +23,7 @@ class handler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()
-                self.wfile.write(f'Hello, {username}! You are authorized.'.encode('utf-8'))
+                self.wfile.write(f'{{"username": "{username}"}}'.encode('utf-8'))
             except jwt.ExpiredSignatureError:
                 self.send_response(401)
                 self.send_header('Content-type', 'text/plain')
