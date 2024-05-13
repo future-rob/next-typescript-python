@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import axios from "axios";
 
 async function login(username: string, password: string) {
   try {
@@ -44,14 +45,12 @@ function Login() {
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        style={{ backgroundColor: "black", color: "white" }}
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        style={{ backgroundColor: "black", color: "white" }}
       />
       <button onClick={handleLogin}>Login</button>
       <pre>{JSON.stringify(token, null, 2)}</pre>
@@ -99,9 +98,78 @@ function UserInfo() {
     <div>
       <h1>User Info</h1>
       <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+      <InferenceComponent />
     </div>
   );
 }
+
+const InferenceComponent = () => {
+  const [modelID, setModelID] = useState(
+    "mistralai/Mixtral-8x7B-Instruct-v0.1"
+  );
+  const [text, setText] = useState("");
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    setResponse(null);
+
+    try {
+      const res = await axios.post(
+        "api/inference",
+        { modelID, text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${Cookies.get("token")}`,
+          },
+        }
+      );
+      setResponse(res.data);
+    } catch (err: any) {
+      setError(err.response.data.message);
+    }
+  };
+
+  return (
+    <div>
+      <h1>AI Inference</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>
+            Model ID:
+            <input
+              type="text"
+              value={modelID}
+              onChange={(e) => setModelID(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Text:
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              required
+            />
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {response && (
+        <div>
+          <h2>Response:</h2>
+          <pre>{JSON.stringify(response, null, 2)}</pre>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function Page() {
   return (

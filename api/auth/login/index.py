@@ -6,7 +6,7 @@ from urllib.parse import parse_qs
 from hashlib import sha256
 
 # Constants and configurations
-API_SECRET_KEY = 'API_SECRET_KEY'
+JWT_AUTH_SECRET = os.getenv('JWT_AUTH_SECRET')
 
 USERS_DB = {
     "user1": sha256("password123".encode('utf-8')).hexdigest()  # Example hashed password
@@ -30,7 +30,7 @@ class Handler(BaseHTTPRequestHandler):
 
             stored_password = USERS_DB.get(username)
             if stored_password and sha256(password.encode('utf-8')).hexdigest() == stored_password:
-                token = jwt.encode({'username': username}, API_SECRET_KEY, algorithm='HS256')
+                token = jwt.encode({'username': username}, JWT_AUTH_SECRET, algorithm='HS256')
                 self.send_response(200)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
@@ -51,7 +51,7 @@ class Handler(BaseHTTPRequestHandler):
             auth_header = self.headers.get('Authorization')
             if auth_header and auth_header.startswith('Bearer '):
                 token = auth_header.split(' ')[1]
-                jwt.decode(token, API_SECRET_KEY, algorithms=['HS256'])
+                jwt.decode(token, JWT_AUTH_SECRET, algorithms=['HS256'])
                 self.send_response(200)
                 self.send_header('Content-type', 'text/plain')
                 self.end_headers()

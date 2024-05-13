@@ -2,8 +2,7 @@ from http.server import BaseHTTPRequestHandler
 import os
 import jwt
 
-# Secret key used to sign and verify the JWT
-JWT_SECRET_KEY = "API_SECRET_KEY"
+JWT_AUTH_SECRET = os.getenv("JWT_AUTH_SECRET")
 JWT_ALGORITHM = "HS256"
 
 class handler(BaseHTTPRequestHandler):
@@ -16,7 +15,7 @@ class handler(BaseHTTPRequestHandler):
 
             try:
                 # Verify the token and decode the payload
-                decoded_payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+                decoded_payload = jwt.decode(token, JWT_AUTH_SECRET, algorithms=[JWT_ALGORITHM])
                 username = decoded_payload.get("username", "unknown")
 
                 # Successfully authenticated
