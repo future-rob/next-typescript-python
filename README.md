@@ -1,40 +1,127 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next Vercel Application with TypeScript and Python
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a full-stack application utilizing TypeScript for the frontend and Python for the backend. The frontend is built with Next.js and React, and the backend uses FastAPI to handle API requests. The project demonstrates user authentication using JSON Web Tokens (JWT) and performs AI inference using the Hugging Face API.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Frontend**: Located in the root directory, built with Next.js and React.
+- **Backend**: Located in the `api` directory, built with FastAPI.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Prerequisites
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Node.js (v14.0.0 or later)
+- Python (v3.12 or later)
+- Vercel CLI (for backend development)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Clone the repository**:
+   ```sh
+   git clone <repository-url>
+   cd with-typescript
+   ```
 
-## Learn More
+2. **Install frontend dependencies**:
+   ```sh
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Set up Python environment**:
+   - Ensure you have `pipenv` installed.
+   - Install Python dependencies:
+     ```sh
+     pipenv install --dev
+     ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Environment Variables**:
+   - Create a `.env` file in the root directory and add the following variables:
+     ```
+     JWT_AUTH_SECRET=<your_jwt_secret>
+     HUGGINGFACE_API_TOKEN=<your_hugging_face_api_token>
+     ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Scripts
+- **Combined**:
+  - `npm run dev`: Runs both frontend and backend development servers concurrently. Open `http://localhost:3001` to access the application.
+  - `npm run start`: Runs both frontend and backend production servers concurrently.
+  - 
+- **Frontend**:
+  - `npm run dev-frontend`: Starts the Next.js development server on port 3000.
+  - `npm run start-frontend`: Starts the Next.js production server.
 
-## Deploy on Vercel
+- **Backend**:
+  - `npm run dev-backend`: Starts the Vercel development server on port 3001.
+  - `npm run start-backend`: Starts the Vercel server for backend API.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+- **Build**:
+  - `npm run build`: Builds the Next.js application.
+  - `npm run export`: Exports the Next.js application.
+  - `npm run lint`: Runs ESLint to lint the codebase.
+
+## Running the Application
+
+1. **Development Mode**:
+   ```sh
+   npm run dev
+   ```
+
+   - Open `http://localhost:3000` to access the frontend.
+   - Backend will be running on `http://localhost:3001`.
+
+2. **Production Mode**:
+   ```sh
+   npm run build
+   npm run start
+   ```
+
+## Frontend
+
+The frontend consists of three main components:
+
+1. **Login Component**:
+   - Handles user login and sets JWT token in cookies.
+   - Located in `index.tsx`.
+
+2. **UserInfo Component**:
+   - Fetches and displays user information using the stored JWT token.
+   - Located in `index.tsx`.
+
+3. **Inference Component**:
+   - Performs AI inference by calling the backend API and displaying the results.
+   - Located in `index.tsx`.
+
+## Backend
+
+The backend is implemented using FastAPI and consists of two main endpoints:
+
+1. **Authentication Endpoint** (`/api/auth`):
+   - **POST /login**: Authenticates the user and returns a JWT token.
+   - **GET /protected**: Example of a protected endpoint that requires a valid JWT token.
+
+2. **Inference Endpoint** (`/api/inference`):
+   - **POST /**: Accepts model ID and text, calls the Hugging Face API, and returns the inference result.
+
+## API Endpoints
+
+- **Login**:
+  - URL: `/api/auth/login`
+  - Method: `POST`
+  - Body: `{ "username": "string", "password": "string" }`
+  - Response: `{ "token": "string" }`
+
+- **Protected Resource**:
+  - URL: `/api/auth/protected`
+  - Method: `GET`
+  - Headers: `Authorization: Bearer <token>`
+  - Response: `Access to protected resource granted`
+
+- **AI Inference**:
+  - URL: `/api/inference`
+  - Method: `POST`
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "modelID": "string", "text": "string" }`
+  - Response: `{ "result": "inference result" }`
