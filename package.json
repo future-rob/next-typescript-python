@@ -11,7 +11,7 @@
     "start-backend": "vercel dev --listen 3001",
     "build": "next build",
     "export": "next export",
-    "lint": "next lint"
+    "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}' --quiet"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.43.1",
